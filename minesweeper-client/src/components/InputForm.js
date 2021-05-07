@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import axiosClient from '../config/axiosClient';
 
-export const InputForm = ({setRows, setColumns}) => {
+export const InputForm = ({setRows, setColumns, setGameId}) => {
 
     const[gameParams, setGameParams] = useState({
         rows: '',
@@ -16,15 +16,18 @@ export const InputForm = ({setRows, setColumns}) => {
         e.preventDefault();
 
         try{
-            await axiosClient.post('/mines/api/creategame', {
+            const gameId = await axiosClient.post('/mines/api/creategame', {
                 "rowsNumber": rows,
                 "columnsNumber": columns,
                 "minesNumber": mines,
                 "userName": "Osman"
             });
 
+            console.log('gameid ', gameId.data)
+
             setRows(rows);
             setColumns(columns);
+            setGameId(gameId.data)
         }catch(error){
             console.log('error ', error)
         }
@@ -45,23 +48,23 @@ export const InputForm = ({setRows, setColumns}) => {
         <div className="container"> 
             <form onSubmit={onSubmitForm}>
                 <div className="form-group row d-flex justify-content-center mt-1">
-                    <label for="row" className="col-sm-1 col-form-label">Rows</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="rows" value={rows} class="form-control" id="row" placeholder="Rows" onChange={updateState}/>
+                    <label htmlFor="row" className="col-sm-1 col-form-label">Rows</label>
+                    <div className="col-sm-2">
+                        <input type="text" name="rows" value={rows} className="form-control" id="row" placeholder="Rows" onChange={updateState}/>
                     </div>
                 </div>
 
                 <div className="form-group row d-flex justify-content-center mt-1">
-                    <label for="columns" className="col-sm-1 col-form-label">Columns</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="columns" value={columns} class="form-control" id="columns" placeholder="Columns" onChange={updateState}/>
+                    <label htmlFor="columns" className="col-sm-1 col-form-label">Columns</label>
+                    <div className="col-sm-2">
+                        <input type="text" name="columns" value={columns} className="form-control" id="columns" placeholder="Columns" onChange={updateState}/>
                     </div>
                 </div>
 
                 <div className="form-group row d-flex justify-content-center mt-1">
-                    <label for="mines" className="col-sm-1 col-form-label">Mines</label>
-                    <div class="col-sm-2">
-                        <input type="text" name="mines" value={mines} class="form-control" id="mines" placeholder="Mines" onChange={updateState}/>
+                    <label htmlFor="mines" className="col-sm-1 col-form-label">Mines</label>
+                    <div className="col-sm-2">
+                        <input type="text" name="mines" value={mines} className="form-control" id="mines" placeholder="Mines" onChange={updateState}/>
                     </div>
                 </div>
 

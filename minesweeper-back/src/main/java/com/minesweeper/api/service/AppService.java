@@ -52,7 +52,7 @@ public class AppService {
 		Game game = op.get();
 		
 		//game.checkSelectedField(row, column);
-		game.checkSelectedFieldv2(row, column);
+		game.checkSelectedField(row, column);
 		
 		return game;
 	}

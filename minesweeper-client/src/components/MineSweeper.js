@@ -8,6 +8,8 @@ export const MineSweeper = () => {
     const [rows, setRows] = useState();
     const [columns, setColumns] = useState();
 
+    const [gameId, setGameId] = useState();
+
     return (
         <div className="container">
             <div className="d-flex justify-content-center mt-5">
@@ -18,6 +20,7 @@ export const MineSweeper = () => {
                 <InputForm 
                     setRows={setRows}
                     setColumns={setColumns}
+                    setGameId={setGameId}
                 />
 
                 
@@ -29,6 +32,7 @@ export const MineSweeper = () => {
                         <Board 
                             rows={rows}
                             columns={columns}
+                            gameId={gameId}
                         />
                     )
                 }

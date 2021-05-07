@@ -33,7 +33,7 @@ public class Game {
     
     public void startGame() {
        this.fields = buildBoard();
-       setNeighbourCount();
+       setAdjacentFieldsCount();
        
        //TODO - DELETE THIS
        for(int i = 0; i < this.fields.length; i++) {
@@ -51,7 +51,7 @@ public class Game {
         return board;
     }
 
-    private void populateBoardWithCells(final Fields[][] board) {
+    private void populateBoardWithCells(Fields[][] board) {
         for (int row = 0; row < this.rowsNumber; row++) {
             for (int col = 0; col < this.columnsNumber; col++) {
                 board[row][col] = new Fields();
@@ -59,7 +59,7 @@ public class Game {
         }
     }
 
-    private void populateBoardWithMines(final Fields[][] board) {
+    private void populateBoardWithMines(Fields[][] board) {
         int mines = 0;
         for (int row = 0; row < this.rowsNumber; row++) {
             for (int col = 0; col < this.columnsNumber; col++) {
@@ -72,7 +72,9 @@ public class Game {
         shuffleBoard(board);
     }
     
-    private void shuffleBoard(final Fields[][] board) {
+    
+    //TODO - CHANGE THIS. It is not shuffleling as it would do
+    private void shuffleBoard(Fields[][] board) {
         Random ran = new Random();
 
         for (int row = board.length - 1; row > 0; row--) {
@@ -88,18 +90,18 @@ public class Game {
     }
     
     
-    private void setNeighbourCount() {
+    private void setAdjacentFieldsCount() {
         for (int row = 0; row < rowsNumber; row++) {
             for (int col = 0; col < columnsNumber; col++) {
-            	Fields cell = getCell(row, col);
+            	Fields field = getField(row, col);
             	
-                cell.setCountOfNeighbourMines(!cell.isMine() ? getCountOfNeighbourMines(cell) : 0);
+            	field.setCountOfNeighbourMines(!field.isMine() ? getCountOfAdjacentMines(field) : 0);
             }
         }
     }
     
-    public void checkSelectedFieldv2(int row, int column) {
-    	Fields currentField = this.getCell(row, column);
+    public void checkSelectedField(int row, int column) {
+    	Fields currentField = this.getField(row, column);
     	
     	this.setGameStatus("Playing");
     	this.moves++;
@@ -108,8 +110,8 @@ public class Game {
     		this.setGameStatus(GAME_LOST);
     	}
     	
-    	if(currentField.isVisited() || this.getCountOfNeighbourMines(currentField) == 0) {
-    		checkCellRecursively(currentField);
+    	if(currentField.isVisited() || this.getCountOfAdjacentMines(currentField) == 0) {
+    		checkFieldRecursively(currentField);
     	}else {
     		currentField.setVisited(true);
     	}
@@ -121,11 +123,11 @@ public class Game {
     }
     
     
-    public List<Fields> getNeighbourCells(Fields cell) {
+    public List<Fields> getAdjacentCells(Fields field) {
         for (int row = 0; row < rowsNumber; row++) {
             for (int col = 0; col < columnsNumber; col++) {
-                if (getCell(row, col) == cell) {
-                    return getNeighbourCells(row, col);
+                if (getField(row, col) == field) {
+                    return getAdjacentCells(row, col);
                 }
             }
 
@@ -133,71 +135,67 @@ public class Game {
         return Collections.emptyList();
     }
 
-    private List<Fields> getNeighbourCells(final int row, final int col) {
-        List<Fields> neighbours = new ArrayList<>();
+    private List<Fields> getAdjacentCells(int row, int col) {
+        List<Fields> adjacents = new ArrayList<>();
         if (isValidPosition(row - 1, col - 1)) {
-            neighbours.add(fields[row - 1][col - 1]);
+        	adjacents.add(fields[row - 1][col - 1]);
         }
         if (isValidPosition(row - 1, col)) {
-            neighbours.add(fields[row - 1][col]);
+        	adjacents.add(fields[row - 1][col]);
         }
         if (isValidPosition(row - 1, col + 1)) {
-            neighbours.add(fields[row - 1][col + 1]);
+        	adjacents.add(fields[row - 1][col + 1]);
         }
         if (isValidPosition(row, col - 1)) {
-            neighbours.add(fields[row][col - 1]);
+        	adjacents.add(fields[row][col - 1]);
         }
         if (isValidPosition(row, col + 1)) {
-            neighbours.add(fields[row][col + 1]);
+        	adjacents.add(fields[row][col + 1]);
         }
         if (isValidPosition(row + 1, col - 1)) {
-            neighbours.add(fields[row + 1][col - 1]);
+        	adjacents.add(fields[row + 1][col - 1]);
         }
         if (isValidPosition(row + 1, col)) {
-            neighbours.add(fields[row + 1][col]);
+        	adjacents.add(fields[row + 1][col]);
         }
         if (isValidPosition(row + 1, col + 1)) {
-            neighbours.add(fields[row + 1][col + 1]);
+        	adjacents.add(fields[row + 1][col + 1]);
         }
-        return neighbours;
+        return adjacents;
     }
 
-    public int getCountOfNeighbourMines(Fields cell) {
-        int countOfNeighbourMines = 0;
-        List<Fields> neighbours = getNeighbourCells(cell);
-        for (Fields neighbour : neighbours) {
-            if (neighbour.isMine()) {
-                countOfNeighbourMines++;
+    public int getCountOfAdjacentMines(Fields field) {
+        int adjacentMines = 0;
+        List<Fields> adjacentFields = getAdjacentCells(field);
+        for (Fields adajacentField : adjacentFields) {
+            if (adajacentField.isMine()) {
+            	adjacentMines++;
             }
         }
-        return countOfNeighbourMines;
+        return adjacentMines;
     }
     
-    
-    
-    
-    
-    private void checkCellRecursively(Fields cell) {
-        List<Fields> neighbours = getNeighbourCells(cell);
-        for (Fields neighbour : neighbours) {
-            if (neighbour.isVisited()) {
+    private void checkFieldRecursively(Fields field) {
+        List<Fields> adjacentFields = getAdjacentCells(field);
+        for (Fields adjacentField : adjacentFields) {
+            if (adjacentField.isVisited()) {
                 continue;
             }
 
-            if (cell.isMine() && !cell.isMarkedAsBomb()) {
+            if (field.isMine() && !field.isMarkedAsBomb()) {
             	this.setGameStatus(GAME_LOST);
                 return;
             } else {
-                neighbour.setVisited(true);
+            	adjacentField.setVisited(true);
 
-                if (getCountOfNeighbourMines(neighbour) == 0) {
-                	checkCellRecursively(neighbour);
+                if (getCountOfAdjacentMines(adjacentField) == 0) {
+                	checkFieldRecursively(adjacentField);
                 }
             }
         }
     }
     
-    public Fields getCell(final int row, final int col) {
+    public Fields getField(int row, int col) {
         if (!isValidPosition(row, col)) {
             return null;
         }
@@ -208,7 +206,7 @@ public class Game {
     private boolean gameIsWon() {
         for (int row = 0; row < rowsNumber; row++) {
             for (int col = 0; col < columnsNumber; col++) {
-                if (!getCell(row, col).isMine() && !getCell(row, col).isVisited()) {
+                if (!getField(row, col).isMine() && !getField(row, col).isVisited()) {
                     return false;
                 }
             }
@@ -216,7 +214,7 @@ public class Game {
         return true;
     }
     
-    private boolean isValidPosition(final int row, final int col) {
+    private boolean isValidPosition(int row, int col) {
         if (row < 0 || row >= rowsNumber) {
             return false;
         }
