@@ -51,6 +51,10 @@ public class AppService {
 		
 		Game game = op.get();
 		
+		if (game.checkIfGameOver()) {
+            throw new RuntimeException("The Game is over");
+        }
+		
 		//game.checkSelectedField(row, column);
 		game.checkSelectedField(row, column);
 		

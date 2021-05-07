@@ -25,9 +25,6 @@ public class Game {
     private int minesNumber;
     private Fields[][] fields;
     
-    
-    
-    
     private static final String GAME_WIN = "Congratulations!! You won :D.";
     private static final String GAME_LOST = "BOOM!!!";
     
@@ -212,6 +209,14 @@ public class Game {
             }
         }
         return true;
+    }
+    
+    public boolean checkIfGameOver() {
+    	return GAME_LOST.equals(this.gameStatus);
+    }
+    
+    public boolean checkIfWon() {
+    	return GAME_WIN.equals(this.gameStatus);
     }
     
     private boolean isValidPosition(int row, int col) {

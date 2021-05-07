@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import axiosClient from '../config/axiosClient';
 
-export const InputForm = ({setRows, setColumns, setGameId}) => {
+export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
 
     const[gameParams, setGameParams] = useState({
         rows: '',
@@ -13,6 +13,8 @@ export const InputForm = ({setRows, setColumns, setGameId}) => {
 
 
     const onSubmitForm = async (e) => {
+        setRows(undefined);
+        setColumns(undefined);
         e.preventDefault();
 
         try{

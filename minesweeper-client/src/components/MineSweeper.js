@@ -9,6 +9,7 @@ export const MineSweeper = () => {
     const [columns, setColumns] = useState();
 
     const [gameId, setGameId] = useState();
+    const [gameStatus, setGameStatus] = useState('');
 
     return (
         <div className="container">
@@ -21,6 +22,7 @@ export const MineSweeper = () => {
                     setRows={setRows}
                     setColumns={setColumns}
                     setGameId={setGameId}
+                    setGameStatus={setGameStatus}
                 />
 
                 
@@ -33,10 +35,20 @@ export const MineSweeper = () => {
                             rows={rows}
                             columns={columns}
                             gameId={gameId}
+                            gameStatus={gameStatus}
+                            setGameStatus={setGameStatus}
                         />
                     )
                 }
                 
+            </div>
+
+            <div className="d-flex justify-content-center mt-5 box">
+                {
+                    gameStatus && (
+                        <h3>{gameStatus}</h3>
+                    )
+                }
             </div>
         </div>
     )

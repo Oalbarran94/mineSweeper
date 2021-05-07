@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.minesweeper.api.model.Game;
 import com.minesweeper.api.model.request.BeginGame;
@@ -41,8 +42,13 @@ public class AppController {
     public ResponseEntity<Game> checkGameById(@PathVariable(value = "gameId") String gameId,
     		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column) throws Exception
     {
-		Game game = appService.checkSelectedField(row, column, gameId);
-        return ResponseEntity.ok(game);
+		try {
+			Game game = appService.checkSelectedField(row, column, gameId);
+	        return ResponseEntity.ok(game);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+		}
+		
     }
 
 }
