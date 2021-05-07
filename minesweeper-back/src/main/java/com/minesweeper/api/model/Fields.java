@@ -11,8 +11,6 @@ public class Fields {
     private boolean isMine;
     private boolean markedAsBomb;
     private int countOfNeighbourMines;
-    private int rowNumber;
-    private int columnNumber;
     
     public Fields() {
         isVisited = false;

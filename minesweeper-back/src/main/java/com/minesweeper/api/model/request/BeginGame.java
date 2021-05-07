@@ -1,9 +1,11 @@
 package com.minesweeper.api.model.request;
 
 import lombok.Data;
+import lombok.ToString;
 import io.swagger.annotations.ApiModelProperty;
 
 @Data
+@ToString
 public class BeginGame {
 	
 	@ApiModelProperty(notes = "User name playing")

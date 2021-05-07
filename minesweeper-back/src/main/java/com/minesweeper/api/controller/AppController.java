@@ -30,6 +30,7 @@ public class AppController {
 	@PostMapping("/creategame")
 	@ApiOperation(value = "Create a new game with given parameters", response = String.class)
 	public ResponseEntity<String> createGame(@RequestBody BeginGame gameParams) {
+		System.out.println("VALORES RECIBIDOS " + gameParams);
 		
 		String gameId = appService.createGame(gameParams);
 		return new ResponseEntity<>(gameId, HttpStatus.OK);
