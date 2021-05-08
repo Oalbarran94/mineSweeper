@@ -60,5 +60,20 @@ public class AppService {
 		
 		return game;
 	}
+	
+	public Game flaggedField(int row, int column, String gameId) {
+		//TODO - Get values from a real data base.. Testing porpuses for now
+		Optional<Game> op = savedGames.stream().filter(field -> field.getGameId().equals(gameId)).findFirst();
+		
+		Game game = op.get();
+		
+		if (game.checkIfGameOver()) {
+            throw new RuntimeException("The Game is over");
+        }
+		
+		game.flaggedField(row, column);
+		
+		return game;
+	}
 
 }

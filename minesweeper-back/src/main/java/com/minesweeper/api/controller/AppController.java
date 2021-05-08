@@ -40,8 +40,7 @@ public class AppController {
 	@GetMapping("/checkgame/{gameId}/{row}/{column}")
 	@ApiOperation(value = "Create a new game with given parameters", response = Game.class)
     public ResponseEntity<Game> checkGameById(@PathVariable(value = "gameId") String gameId,
-    		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column) throws Exception
-    {
+    		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column) throws Exception {
 		try {
 			Game game = appService.checkSelectedField(row, column, gameId);
 	        return ResponseEntity.ok(game);
@@ -50,5 +49,18 @@ public class AppController {
 		}
 		
     }
+	
+	@GetMapping("/flaggedfield/{gameId}/{row}/{column}")
+	@ApiOperation(value = "Mark field as a possible mine", response = Game.class)
+	public ResponseEntity<Game> flaggedField(@PathVariable(value = "gameId") String gameId,
+    		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column){
+		try {
+			System.out.println("MARKING FIELD ");
+			Game game = appService.flaggedField(row, column, gameId);
+	        return ResponseEntity.ok(game);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+		}
+	}
 
 }

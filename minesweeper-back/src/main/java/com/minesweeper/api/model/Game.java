@@ -179,7 +179,7 @@ public class Game {
                 continue;
             }
 
-            if (field.isMine() && !field.isMarkedAsBomb()) {
+            if (field.isMine() && !field.isFlagged()) {
             	this.setGameStatus(GAME_LOST);
                 return;
             } else {
@@ -204,6 +204,26 @@ public class Game {
         for (int row = 0; row < rowsNumber; row++) {
             for (int col = 0; col < columnsNumber; col++) {
                 if (!getField(row, col).isMine() && !getField(row, col).isVisited()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public void flaggedField(int row, int col) {
+        Fields field = getField(row, col);
+        field.setFlagged(true);
+        
+        if(gameIsWonByMarkingMines()) {
+        	this.setGameStatus(GAME_WIN);
+        }
+    }
+    
+    private boolean gameIsWonByMarkingMines() {
+    	for (int row = 0; row < rowsNumber; row++) {
+            for (int col = 0; col < columnsNumber; col++) {
+                if (!getField(row, col).isMine() && !getField(row, col).isFlagged()) {
                     return false;
                 }
             }

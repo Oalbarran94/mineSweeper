@@ -9,13 +9,13 @@ public class Fields {
 	
 	private boolean isVisited;
     private boolean isMine;
-    private boolean markedAsBomb;
+    private boolean isFlagged;
     private int countOfNeighbourMines;
     
     public Fields() {
         isVisited = false;
         isMine = false;
-        markedAsBomb = false;
+        isFlagged = false;
         countOfNeighbourMines = 0;
     }
 
