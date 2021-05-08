@@ -8,14 +8,23 @@ import java.util.Random;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+
+
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
+@Document(collection = "game")
 public class Game {
 	
+	@Id
+	private long id;
 	private String playerName;
 	private String gameStatus;
 	private String gameId;
@@ -215,21 +224,21 @@ public class Game {
         Fields field = getField(row, col);
         field.setFlagged(true);
         
-        if(gameIsWonByMarkingMines()) {
-        	this.setGameStatus(GAME_WIN);
-        }
+//        if(gameIsWonByMarkingMines()) {
+//        	this.setGameStatus(GAME_WIN);
+//        }
     }
     
-    private boolean gameIsWonByMarkingMines() {
-    	for (int row = 0; row < rowsNumber; row++) {
-            for (int col = 0; col < columnsNumber; col++) {
-                if (!getField(row, col).isMine() && !getField(row, col).isFlagged()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    private boolean gameIsWonByMarkingMines() {
+//    	for (int row = 0; row < rowsNumber; row++) {
+//            for (int col = 0; col < columnsNumber; col++) {
+//                if (!getField(row, col).isMine() && !getField(row, col).isFlagged()) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
     
     public boolean checkIfGameOver() {
     	return GAME_LOST.equals(this.gameStatus);

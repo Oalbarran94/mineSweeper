@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.minesweeper.api.model.Game;
@@ -12,6 +14,9 @@ import com.minesweeper.api.model.request.BeginGame;
 
 @Service
 public class AppService {
+	
+	@Autowired
+	MongoTemplate mongoTemplate;
 	
 	//Temporary variable to save games.. 
 	//TODO - Change with real db
@@ -40,6 +45,8 @@ public class AppService {
 		}else {
 			savedGames.add(newGame);
 		}
+		
+		mongoTemplate.save(newGame);
 		
 		return uuid.toString();
 	}
