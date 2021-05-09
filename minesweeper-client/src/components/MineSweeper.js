@@ -3,6 +3,7 @@ import { Board } from './Board'
 import { InputForm } from './InputForm'
 import './App.css';
 import axiosClient from '../config/axiosClient';
+import { Timer } from './Timer';
 
 export const MineSweeper = () => {
 
@@ -16,6 +17,7 @@ export const MineSweeper = () => {
     const[playedGames, setPlayedGames] = useState();
 
     const[gameNotPaused, setGameNotPaused] = useState();
+
 
     useEffect(() => {
 
@@ -33,7 +35,6 @@ export const MineSweeper = () => {
         }
 
     }, [gamePlayer, gameStatus]);
-
 
     const renderStatus = (gameStatus) => {
 
@@ -68,6 +69,14 @@ export const MineSweeper = () => {
             console.log('error ', error)
         }
     }
+
+    // const renderTime = () => {
+
+    //     let currentTime = new Date();
+    //     return (
+
+    //     );
+    // }
 
     return (
         <div className="container">
@@ -104,6 +113,14 @@ export const MineSweeper = () => {
                             }
                             
                         </div>
+
+                        {
+                            gameStatus === 'PLAYING' && (
+                                <div className="mt-5 box">
+                                    <Timer />
+                                </div>
+                            )
+                        }
 
                         <div className="mt-5 box">
                             {
