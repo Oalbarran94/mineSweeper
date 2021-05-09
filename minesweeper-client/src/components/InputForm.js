@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import axiosClient from '../config/axiosClient';
+import './App.css';
 
-export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
+export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameStatus, setGamePlayer, gameId}) => {
 
     const[gameParams, setGameParams] = useState({
         rows: '',
@@ -19,21 +20,28 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
         e.preventDefault();
 
         try{
-            const gameId = await axiosClient.post('/mines/api/creategame', {
+            const game = await axiosClient.post('/mines/api/creategame', {
                 "rowsNumber": rows,
                 "columnsNumber": columns,
                 "minesNumber": mines,
                 "userName": user
             });
 
-            console.log('gameid ', gameId.data)
-
             setRows(rows);
             setColumns(columns);
-            setGameId(gameId.data)
+            setGamePlayer(user)
+            setGameId(game.data.gameId)
+            setGameStatus(game.data.gameStatus);
         }catch(error){
             console.log('error ', error)
         }
+
+        setGameParams({
+            rows: '',
+            columns: '',
+            mines: '',
+            user: ''
+        })
 
     }
 
@@ -45,7 +53,25 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
         })
     }
 
-    
+    const onClickPause = async (e) => {
+        e.preventDefault();
+        try{
+            const game = await axiosClient.get(`/mines/api/pausegame/${gameId}`);
+            setGameStatus(game.data.gameStatus);
+        }catch(error){
+            console.log('error ', error)
+        }
+
+        setGameParams({
+            rows: '',
+            columns: '',
+            mines: '',
+            user: ''
+        })
+
+        setRows(undefined);
+        setColumns(undefined);
+    }
 
     return (
         <div className="container"> 
@@ -54,7 +80,7 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
                 <div className="form-group row mt-1">
                     <label htmlFor="user" className="col-sm-1 col-form-label">User</label>
                     <div className="col-sm-3">
-                        <input type="text" name="user" value={user} className="form-control" id="columns" placeholder="Usuer" onChange={updateState}/>
+                        <input type="text" name="user" value={user} className="form-control" id="columns" placeholder="User" onChange={updateState}/>
                     </div>
                 </div>
 
@@ -80,7 +106,8 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus}) => {
                 </div>
 
                 <div className="form-group row justify-content-cente mt-2">
-                    <button type="submit" className="btn btn-primary mb-2 col-sm-2">Start game</button>
+                    <button disabled={gameStatus ==='PLAYING'} type="submit" className="btn btn-primary mb-2 col-sm-2">Start game</button>
+                    <button disabled={gameStatus !=='PLAYING'} onClick={onClickPause} className="btn btn-info mb-2 col-sm-2 marginLeft">Pause game</button>
                 </div>
             </form>
         </div>

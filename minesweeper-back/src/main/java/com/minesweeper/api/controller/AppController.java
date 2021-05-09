@@ -1,6 +1,9 @@
 package com.minesweeper.api.controller;
 
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.minesweeper.api.model.Game;
+import com.minesweeper.api.model.History;
 import com.minesweeper.api.model.request.BeginGame;
 import com.minesweeper.api.service.AppService;
 
@@ -29,12 +33,10 @@ public class AppController {
 	private AppService appService;
 	
 	@PostMapping("/creategame")
-	@ApiOperation(value = "Create a new game with given parameters", response = String.class)
-	public ResponseEntity<String> createGame(@RequestBody BeginGame gameParams) {
-		System.out.println("VALORES RECIBIDOS " + gameParams);
-		
-		String gameId = appService.createGame(gameParams);
-		return new ResponseEntity<>(gameId, HttpStatus.OK);
+	@ApiOperation(value = "Create a new game with given parameters", response = Game.class)
+	public ResponseEntity<Game> createGame(@RequestBody BeginGame gameParams) {
+		Game game = appService.createGame(gameParams);
+		return new ResponseEntity<>(game, HttpStatus.OK);
 	}
 	
 	@GetMapping("/checkgame/{gameId}/{row}/{column}")
@@ -55,8 +57,29 @@ public class AppController {
 	public ResponseEntity<Game> flaggedField(@PathVariable(value = "gameId") String gameId,
     		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column){
 		try {
-			System.out.println("MARKING FIELD ");
 			Game game = appService.flaggedField(row, column, gameId);
+	        return ResponseEntity.ok(game);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+		}
+	}
+	
+	@GetMapping("/playedgames/{user}")
+	@ApiOperation(value = "Fetch played games by user", response = List.class)
+	public ResponseEntity<List<History>> getPlayedGames(@PathVariable(value = "user") String user){
+		try {
+			List<History> history = appService.getPLayedGames(user);
+	        return ResponseEntity.ok(history);
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+		}
+	}
+	
+	@GetMapping("/pausegame/{gameId}")
+	@ApiOperation(value = "Fetch played games by user", response = Game.class)
+	public ResponseEntity<Game> pauseGame(@PathVariable(value = "gameId") String gameId){
+		try {
+			Game game = appService.pauseGame(gameId);
 	        return ResponseEntity.ok(game);
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);

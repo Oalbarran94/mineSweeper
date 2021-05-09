@@ -24,18 +24,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Game {
 	
 	@Id
-	private long id;
+	private long _id;
+	private String gameId;
 	private String playerName;
 	private String gameStatus;
-	private String gameId;
-    private int moves;
     private int rowsNumber;
     private int columnsNumber;
     private int minesNumber;
     private Fields[][] fields;
     
     private static final String GAME_WIN = "Congratulations!! You won :D.";
-    private static final String GAME_LOST = "BOOM!!!";
+    private static final String GAME_LOST = "GAME OVER";
+    private static final String GAME_PAUSED = "PAUSED";
     
     public void startGame() {
        this.fields = buildBoard();
@@ -109,11 +109,11 @@ public class Game {
     public void checkSelectedField(int row, int column) {
     	Fields currentField = this.getField(row, column);
     	
-    	this.setGameStatus("Playing");
-    	this.moves++;
+    	this.setGameStatus("PLAYING");
     	
     	if(currentField.isMine()) {
     		this.setGameStatus(GAME_LOST);
+    		return;
     	}
     	
     	if(currentField.isVisited() || this.getCountOfAdjacentMines(currentField) == 0) {
@@ -223,22 +223,7 @@ public class Game {
     public void flaggedField(int row, int col) {
         Fields field = getField(row, col);
         field.setFlagged(true);
-        
-//        if(gameIsWonByMarkingMines()) {
-//        	this.setGameStatus(GAME_WIN);
-//        }
     }
-    
-//    private boolean gameIsWonByMarkingMines() {
-//    	for (int row = 0; row < rowsNumber; row++) {
-//            for (int col = 0; col < columnsNumber; col++) {
-//                if (!getField(row, col).isMine() && !getField(row, col).isFlagged()) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
     
     public boolean checkIfGameOver() {
     	return GAME_LOST.equals(this.gameStatus);
@@ -258,5 +243,17 @@ public class Game {
         }
 
         return fields[row][col] != null;
+    }
+    
+    public void togglePause() {
+        if (this.checkIfPaused()) {
+            this.setGameStatus("PLAYING");
+        } else {
+        	this.setGameStatus(GAME_PAUSED);
+        }
+    }
+    
+    public boolean checkIfPaused() {
+        return GAME_PAUSED.equals(this.gameStatus);
     }
 }
