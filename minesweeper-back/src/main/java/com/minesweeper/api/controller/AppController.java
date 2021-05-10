@@ -39,12 +39,14 @@ public class AppController {
 		return new ResponseEntity<>(game, HttpStatus.OK);
 	}
 	
-	@GetMapping("/checkgame/{gameId}/{row}/{column}")
+	@GetMapping("/checkgame/{gameId}/{row}/{column}/{timeTaken}")
 	@ApiOperation(value = "Create a new game with given parameters", response = Game.class)
     public ResponseEntity<Game> checkGameById(@PathVariable(value = "gameId") String gameId,
-    		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column) throws Exception {
+    		@PathVariable(value = "row") int row, @PathVariable(value = "column") int column,
+    		@PathVariable(value = "timeTaken") String timeTaken) throws Exception {
 		try {
-			Game game = appService.checkSelectedField(row, column, gameId);
+			System.out.println("HORA " + timeTaken);
+			Game game = appService.checkSelectedField(row, column, gameId, timeTaken);
 	        return ResponseEntity.ok(game);
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
@@ -75,11 +77,12 @@ public class AppController {
 		}
 	}
 	
-	@GetMapping("/pausegame/{gameId}")
+	@GetMapping("/pausegame/{gameId}/{timeTaken}")
 	@ApiOperation(value = "Fetch played games by user", response = Game.class)
-	public ResponseEntity<Game> pauseGame(@PathVariable(value = "gameId") String gameId){
+	public ResponseEntity<Game> pauseGame(@PathVariable(value = "gameId") String gameId,
+			@PathVariable(value = "timeTaken") String timeTaken){
 		try {
-			Game game = appService.pauseGame(gameId);
+			Game game = appService.pauseGame(gameId, timeTaken);
 	        return ResponseEntity.ok(game);
 		} catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);

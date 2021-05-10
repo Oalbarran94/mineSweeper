@@ -18,13 +18,14 @@ export const MineSweeper = () => {
 
     const[gameNotPaused, setGameNotPaused] = useState();
 
+    const[timer, setTimer] = useState();
+    const[startCounting, setStartCounting] = useState(false);
+
 
     useEffect(() => {
 
-        console.log('PAYER ', gamePlayer);
-
         const fetchGames = async () => {
-            const url = `http://localhost:8080/mines/api/playedgames/${gamePlayer}`;
+            const url = `https://minesweeper-api-java.herokuapp.com/mines/api/playedgames/${gamePlayer}`;
             const respuesta = await fetch(url);
             const resultado = await respuesta.json();
             setPlayedGames(resultado);
@@ -35,28 +36,28 @@ export const MineSweeper = () => {
         }
 
     }, [gamePlayer, gameStatus]);
-
+    
     const renderStatus = (gameStatus) => {
 
         if(gameStatus === 'Congratulations!! You won :D.'){
             return (
-                <span class="badge bg-primary">Finished. Win</span>
+                <span className="badge bg-primary">Finished. Win</span>
             )
         } else if(gameStatus === 'GAME OVER' || gameStatus === 'The game is over'){
             return (
-                <span class="badge bg-danger">Finished. Game Over</span>
+                <span className="badge bg-danger">Finished. Game Over</span>
             )
         } else {
             return (
-                <span class="badge bg-info">Paused</span>
+                <span className="badge bg-info">Paused</span>
             )
         }
         
     }
 
-    const resumeGame = async () => {
+    const resumeGame = async (currentGameId) => {
         try{
-            const game = await axiosClient.get(`/mines/api/pausegame/${gameId}`);
+            const game = await axiosClient.get(`/mines/api/pausegame/${currentGameId}/${timer}`);
 
             if(game.data.gameStatus === 'PLAYING'){
                 setRows(game.data.rowsNumber);
@@ -70,14 +71,6 @@ export const MineSweeper = () => {
         }
     }
 
-    // const renderTime = () => {
-
-    //     let currentTime = new Date();
-    //     return (
-
-    //     );
-    // }
-
     return (
         <div className="container">
             <div className="row pt-4">
@@ -90,11 +83,15 @@ export const MineSweeper = () => {
                             <InputForm 
                                 gameId={gameId}
                                 gameStatus={gameStatus}
+                                timer={timer}
                                 setRows={setRows}
                                 setColumns={setColumns}
                                 setGameId={setGameId}
                                 setGameStatus={setGameStatus}
                                 setGamePlayer={setGamePlayer}
+                                setStartCounting={setStartCounting}
+                                setTimer={setTimer}
+                                setGameNotPaused={setGameNotPaused}
                             />
                         </div>
 
@@ -107,7 +104,10 @@ export const MineSweeper = () => {
                                         gameId={gameId}
                                         gameStatus={gameStatus}
                                         gameNotPaused={gameNotPaused}
+                                        timer={timer}
+                                        setTimer={setTimer}
                                         setGameStatus={setGameStatus}
+                                        setStartCounting={setStartCounting}
                                     />
                                 )
                             }
@@ -115,9 +115,9 @@ export const MineSweeper = () => {
                         </div>
 
                         {
-                            gameStatus === 'PLAYING' && (
+                            startCounting && (
                                 <div className="mt-5 box">
-                                    <Timer />
+                                    <Timer setTimer={setTimer} startCounting={startCounting}/>
                                 </div>
                             )
                         }
@@ -143,9 +143,10 @@ export const MineSweeper = () => {
                                 <div className="card w-100">
                                 <div className="card-body">
                                     <h6 className="card-description">Game Status {renderStatus(item.historyGame.gameStatus)}</h6>
+                                    <p className="card-text">Time taken {item.historyGame.timeTaken}</p>
                                     {
                                         item.historyGame.gameStatus === 'PAUSED' && (
-                                            <button onClick={resumeGame} className="btn btn-primary col-sm-3">Resume</button>
+                                            <button onClick={() => resumeGame(item.historyGame.gameId)} className="btn btn-primary col-sm-3">Resume</button>
                                         )
                                     }
                                     

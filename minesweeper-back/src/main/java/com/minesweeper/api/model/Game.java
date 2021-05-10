@@ -28,6 +28,7 @@ public class Game {
 	private String gameId;
 	private String playerName;
 	private String gameStatus;
+	private String timeTaken;
     private int rowsNumber;
     private int columnsNumber;
     private int minesNumber;
@@ -40,13 +41,6 @@ public class Game {
     public void startGame() {
        this.fields = buildBoard();
        setAdjacentFieldsCount();
-       
-       //TODO - DELETE THIS
-       for(int i = 0; i < this.fields.length; i++) {
-    	   for(int j = 0; j < this.fields[i].length; j++) {
-    		   System.out.println("ELEMENT " + i + " " + j + " " + fields[i][j]);
-    	   }
-       }
     }
     
     
@@ -79,7 +73,6 @@ public class Game {
     }
     
     
-    //TODO - CHANGE THIS. It is not shuffleling as it would do
     private void shuffleBoard(Fields[][] board) {
         Random ran = new Random();
 

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import axiosClient from '../config/axiosClient';
 import './App.css';
 
-export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameStatus, setGamePlayer, gameId}) => {
+export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameStatus, setGamePlayer, gameId, setStartCounting, timer, setGameNotPaused}) => {
 
     const[gameParams, setGameParams] = useState({
         rows: '',
@@ -17,6 +17,7 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
     const onSubmitForm = async (e) => {
         setRows(undefined);
         setColumns(undefined);
+        setGameNotPaused(undefined);
         e.preventDefault();
 
         try{
@@ -32,6 +33,8 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
             setGamePlayer(user)
             setGameId(game.data.gameId)
             setGameStatus(game.data.gameStatus);
+            setStartCounting(true);
+            
         }catch(error){
             console.log('error ', error)
         }
@@ -54,9 +57,10 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
     }
 
     const onClickPause = async (e) => {
+        setGameNotPaused(undefined);
         e.preventDefault();
         try{
-            const game = await axiosClient.get(`/mines/api/pausegame/${gameId}`);
+            const game = await axiosClient.get(`/mines/api/pausegame/${gameId}/${timer}`);
             setGameStatus(game.data.gameStatus);
         }catch(error){
             console.log('error ', error)
@@ -71,6 +75,8 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
 
         setRows(undefined);
         setColumns(undefined);
+        setStartCounting(false);
+        setGameNotPaused(undefined);
     }
 
     return (

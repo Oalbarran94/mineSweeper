@@ -50,7 +50,7 @@ public class AppService {
 		return gameSaved;
 	}
 	
-	public Game checkSelectedField(int row, int column, String gameId) throws Exception{
+	public Game checkSelectedField(int row, int column, String gameId, String timeTaken) throws Exception{
 		
 		MongoCollection<Document> collection = mongoTemplate.getCollection("history");
 		
@@ -78,6 +78,7 @@ public class AppService {
 		game = mongoTemplate.save(game);
 		
 		if(game.checkIfWon()) {
+			game.setTimeTaken(timeTaken);
 			History history = historyGame.isPresent() ? updateHistory(game) : setNewHistory(collection.countDocuments(), game);
 			if(historyGame.isPresent()) {
 				mongoTemplate.save(history);
@@ -87,6 +88,7 @@ public class AppService {
 		}
 		
 		if(game.checkIfGameOver()) {
+			game.setTimeTaken(timeTaken);
 			History history = historyGame.isPresent() ? updateHistory(game) : setNewHistory(collection.countDocuments(), game);
 			if(historyGame.isPresent()) {
 				mongoTemplate.save(history);
@@ -125,7 +127,7 @@ public class AppService {
 		return currentGames;
 	}
 	
-	public Game pauseGame(String gameId) {
+	public Game pauseGame(String gameId, String timeTaken) {
 		MongoCollection<Document> collection = mongoTemplate.getCollection("history");
 		
 		List<Game> gamesSaved = mongoTemplate.findAll(Game.class);
@@ -142,6 +144,7 @@ public class AppService {
         }
 		
 		game.togglePause();
+		game.setTimeTaken(timeTaken);
 		
 		game = mongoTemplate.save(game);
 		

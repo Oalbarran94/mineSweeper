@@ -33,6 +33,14 @@ export const Board = (elements) => {
     const clickCoordinate = async (e) => {
 
         if(elements.gameStatus === 'GAME OVER' || elements.gameStatus === 'The game is over'){
+            elements.setStartCounting(false);
+            elements.setTimer(undefined);
+            return;
+        }
+
+        if(elements.gameStatus === 'Congratulations!! You won :D.'){
+            elements.setStartCounting(false);
+            elements.setTimer(undefined);
             return;
         }
 
@@ -40,17 +48,13 @@ export const Board = (elements) => {
 
         let coordinates = id.split('|')
 
-        console.log(coordinates)
-
         let coordinateX = coordinates[0].substr(coordinates[0].length - 1);
         let coordinateY = coordinates[1].substr(coordinates[1].length - 1);
-
-
 
         if (e.type === 'click') {
             const checkStatusGame = async () => {
                 try{
-                    return await axiosClient.get(`/mines/api/checkgame/${elements.gameId}/${coordinateX}/${coordinateY}`);
+                    return await axiosClient.get(`/mines/api/checkgame/${elements.gameId}/${coordinateX}/${coordinateY}/${elements.timer}`);
                 }catch(error){
                     let errorGame = error.message;
                     elements.setGameStatus("The game is over");
@@ -61,6 +65,7 @@ export const Board = (elements) => {
             let gameStatus = await checkStatusGame();
 
             if(gameStatus === 'Request failed with status code 500'){
+                elements.setTimer(undefined);
                 return;
             } else{
                 elements.setGameStatus(gameStatus.data.gameStatus)
@@ -82,6 +87,16 @@ export const Board = (elements) => {
                             }
                         }
                     }
+                }
+
+                if(gameStatus.data.gameStatus === 'GAME OVER' || gameStatus.data.gameStatus === 'The game is over'){
+                    elements.setStartCounting(false);
+                    elements.setTimer(undefined);
+                }
+        
+                if(gameStatus.data.gameStatus === 'Congratulations!! You won :D.'){
+                    elements.setStartCounting(false);
+                    elements.setTimer(undefined);
                 }
                 
             }
