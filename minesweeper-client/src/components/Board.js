@@ -29,8 +29,13 @@ export const Board = (elements) => {
         
     }, [elements.gameNotPaused]);
 
+    const getSecondPartId = (id) => {
+        return id.split('-')[1];
+    }
+
 
     const clickCoordinate = async (e) => {
+        console.log('TARGET ', e.target)
 
         if(elements.gameStatus === 'GAME OVER' || elements.gameStatus === 'The game is over'){
             elements.setStartCounting(false);
@@ -47,9 +52,12 @@ export const Board = (elements) => {
         let id = e.target.id;
 
         let coordinates = id.split('|')
+        console.log('COORDINATEEEEE idddd', coordinates)
 
-        let coordinateX = coordinates[0].substr(coordinates[0].length - 1);
-        let coordinateY = coordinates[1].substr(coordinates[1].length - 1);
+        let coordinateX = getSecondPartId(coordinates[0]);
+        let coordinateY = getSecondPartId(coordinates[1]);
+
+        console.log('COORDINATEEEEE ', `r-${coordinateX}|c-${coordinateY}`)
 
         if (e.type === 'click') {
             const checkStatusGame = async () => {

@@ -15,10 +15,30 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
 
 
     const onSubmitForm = async (e) => {
+        
+        e.preventDefault();
+
+        if(user === ''){
+            alert('User is a mandatory field');
+            return;
+        }
+        if(rows === ''){
+            alert('Row is a mandatory field');
+            return;
+        }
+        if(columns === ''){
+            alert('Columns is a mandatory field');
+            return;
+        }
+        if(mines === ''){
+            alert('Mine is a mandatory field');
+            return;
+        }
+        
+
         setRows(undefined);
         setColumns(undefined);
         setGameNotPaused(undefined);
-        e.preventDefault();
 
         try{
             const game = await axiosClient.post('/mines/api/creategame', {
