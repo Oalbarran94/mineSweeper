@@ -34,6 +34,19 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
             alert('Mine is a mandatory field');
             return;
         }
+
+        if(rows === '0'){
+            alert('Row Must be greater than 0');
+            return;
+        }
+        if(columns === '0'){
+            alert('Columns Must be greater than 0');
+            return;
+        }
+        if(mines === '0'){
+            alert('Mine Must be greater than 0');
+            return;
+        }
         
 
         setRows(undefined);
@@ -113,21 +126,21 @@ export const InputForm = ({setRows, setColumns, setGameId, setGameStatus, gameSt
                 <div className="form-group row mt-1">
                     <label htmlFor="row" className="col-sm-1 col-form-label">Rows</label>
                     <div className="col-sm-3">
-                        <input type="text" name="rows" value={rows} className="form-control" id="row" placeholder="Rows" onChange={updateState}/>
+                        <input type="number" name="rows" value={rows} className="form-control" id="row" placeholder="Rows" onChange={updateState}/>
                     </div>
                 </div>
 
                 <div className="form-group row mt-1">
                     <label htmlFor="columns" className="col-sm-1 col-form-label">Columns</label>
                     <div className="col-sm-3">
-                        <input type="text" name="columns" value={columns} className="form-control" id="columns" placeholder="Columns" onChange={updateState}/>
+                        <input type="number" name="columns" value={columns} className="form-control" id="columns" placeholder="Columns" onChange={updateState}/>
                     </div>
                 </div>
 
                 <div className="form-group row mt-1">
                     <label htmlFor="mines" className="col-sm-1 col-form-label">Mines</label>
                     <div className="col-sm-3">
-                        <input type="text" name="mines" value={mines} className="form-control" id="mines" placeholder="Mines" onChange={updateState}/>
+                        <input type="number" name="mines" value={mines} className="form-control" id="mines" placeholder="Mines" onChange={updateState}/>
                     </div>
                 </div>
 
