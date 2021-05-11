@@ -15,3 +15,5 @@ You can right click a field where you think it is a mine. The field will mark wi
 If you click a cell with a mine, you will lose the game and all the mines will be revealed with 💣.
 
 If you revealed all the fields with no mine, you will win the game.
+
+The first time you played the game, it might take a few seconds to start due to heroku starting up the server.
